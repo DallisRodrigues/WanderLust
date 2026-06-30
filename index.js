@@ -3,15 +3,19 @@ import initData from "./init/data.js";
 import Listing from "./models/listing.js";
 import User from "./models/user.js";     
 import Review from "./models/review.js"; 
-
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+import dotenv from "dotenv";
+if (process.env.NODE_ENV !== "production") {
+    dotenv.config();
+}
+// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const dbUrl=process.env.ATLASDB_URL;
 
 main()
     .then(() => console.log("Connected to DB"))
     .catch((err) => console.log(err));
 
 async function main() {
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(dbUrl);
 }
 
 const delay = (ms) => new Promise(res => setTimeout(res, ms));
