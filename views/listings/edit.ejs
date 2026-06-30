@@ -1,0 +1,78 @@
+<% layout("/layouts/boilerplate") %>
+    <div class="row mt-3">
+        <div class="col-8 offset-2">
+            <h3>Edit listing</h3>
+            <form method="post" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" name="listing[title]" value="<%=listing.title%>" class="form-control" required>
+                    <div class="valid-feedback">Title looks good</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea name="listing[description]" class="form-control" required><%=listing.description%></textarea>
+                    <div class="invalid-feedback">Description should be valid</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select name="listing[category]" class="form-select" required>
+                        <% const categories = ["Trending", "Rooms", "Iconic Cities", "Mountains", "Castles", "Amazing Pools", "Camping", "Farms", "Arctic", "Domes", "Boats"] %>
+                        <% for(let category of categories) { %>
+                            <option value="<%= category %>" <%= listing.category === category ? 'selected' : '' %>><%= category %></option>
+                        <% } %>
+                    </select>
+                    <div class="invalid-feedback">Please select a valid category</div>
+                </div>
+                
+                <div class="mb-3">
+                    <p class="form-label">Original Listing Image</p>
+                    <img src="<%= listing.image.url %>" alt="Current Image" class="img-thumbnail" style="height: 150px; width: 250px; object-fit: cover;">
+                </div>
+
+                <div class="mb-3">
+                    <label for="image" class="form-label">Upload New Image</label>
+                    <input type="file" name="listing[image]" class="form-control">
+                </div>
+
+                <div class="row">
+                    <div class="mb-3 col-md-4">
+                        <label for="price" class="form-label">Price</label>
+                        <input type="text" name="listing[price]" value="<%=listing.price%>" class="form-control" required>
+                        <div class="invalid-feedback">price should be valid</div>
+                    </div>
+                    <div class="mb-3 col-md-8">
+                        <label for="country" class="form-label">Country</label>
+                        <input type="text" name="listing[country]" id="country-input" value="<%=listing.country%>" class="form-control" required>
+                        <div class="invalid-feedback">country name should be valid</div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <div class="input-group">
+                        <input type="text" name="listing[location]" id="location-input" value="<%=listing.location%>" class="form-control" required>
+                        <button class="btn btn-outline-dark" type="button" id="search-location-btn">Find on Map</button>
+                    </div>
+                    <div class="invalid-feedback">Location should be valid</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Adjust Location Pin</label>
+                    <div id="form-map" style="height: 300px; width: 100%; border-radius: 8px; z-index: 1;"></div>
+                </div>
+                
+                <button class="btn btn-dark edit-btn mt-3 mb-5">Edit</button>
+            </form>
+        </div>
+    </div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // Safe text wrapper to keep code formatters silent
+    const startCoordinates = JSON.parse('<%- JSON.stringify(listing.geometry.coordinates) %>');
+</script>
+<script src="/js/formMap.js"></script>  
